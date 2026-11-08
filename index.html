@@ -258,10 +258,13 @@ DATA.forEach((r,i) => {
     r.st = r.x ? "closed" : "always";
   }
   r.isOpen = r.st !== "closed";
-  // NEW: 웹페이지 게시일(UPDATED 날짜)과 그 전날에 올라온 공고(공고일 기준)만
+  // NEW: (1) 공고일이 웹페이지 개시일(UPDATED 날짜) 당일·전날인 공고
+  //      (2) 공고일과 관계없이 개시일에 웹페이지에 처음 올라간 공고 (r.a = 처음 게시된 날)
   const posted = r.sd || (r.a ? new Date(r.a+"T00:00:00") : null);
   const gap = posted ? Math.round((PUBDAY - posted)/DAY) : null;
-  r.isNew = gap !== null && gap >= 0 && gap <= 1 && r.isOpen;
+  const firstDay = r.a ? new Date(r.a+"T00:00:00") : null;
+  const firstToday = firstDay && Math.round((PUBDAY - firstDay)/DAY) === 0;
+  r.isNew = r.isOpen && ((gap !== null && gap >= 0 && gap <= 1) || firstToday);
   r.hay = (r.t+" "+r.o+" "+(r.tg||"")+" "+(r.ct||"")+" "+r.f.join(" ")).toLowerCase();
 });
 
