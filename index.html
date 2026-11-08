@@ -204,6 +204,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;padding:20px 0 30px
         <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <input id="q" type="search" placeholder="사업명, 기관, 지원대상·내용 검색" aria-label="검색"></label>
         <div class="seg" id="statusSeg" role="group" aria-label="상태">
+          <button data-v="new" aria-pressed="false">신규</button>
           <button data-v="open" aria-pressed="true">모집중</button>
           <button data-v="all" aria-pressed="false">전체</button>
           <button data-v="closed" aria-pressed="false">마감</button>
@@ -350,6 +351,7 @@ function renderChips(){
 
 function filtered(){
   let rows = DATA.filter(r=>{
+    if (state.status==="new" && !r.isNew) return false;
     if (state.status==="open" && !r.isOpen) return false;
     if (state.status==="closed" && r.isOpen) return false;
     if (state.field && !r.f.includes(state.field)) return false;
@@ -409,14 +411,14 @@ function renderActive(n){
     if (k==="org") orgSel.value="";
     update(true);
   });
-  const sLabel = {open:"모집중",all:"전체",closed:"마감"}[state.status];
+  const sLabel = {new:"신규",open:"모집중",all:"전체",closed:"마감"}[state.status];
   document.getElementById("count").innerHTML = `<b style="color:var(--text)">${sLabel} ${n}건</b>`;
 }
 function renderList(){
   const rows = filtered();
   renderActive(rows.length);
   const list = document.getElementById("list");
-  list.innerHTML = rows.length ? rows.slice(0,state.shown).map(itemHTML).join("") : `<div class="empty">조건에 맞는 공고가 없습니다.</div>`;
+  list.innerHTML = rows.length ? rows.slice(0,state.shown).map(itemHTML).join("") : `<div class="empty">${state.status==="new" ? `${PUBDAY.getMonth()+1}월 ${PUBDAY.getDate()}일 기준으로 전날과 당일에 올라온 신규 공고가 없습니다.` : "조건에 맞는 공고가 없습니다."}</div>`;
   const lm = document.getElementById("loadMore");
   lm.style.display = rows.length>state.shown ? "block":"none";
   lm.textContent = `더 보기 (${rows.length-state.shown}건 남음)`;
