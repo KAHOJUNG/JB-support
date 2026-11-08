@@ -50,6 +50,10 @@ h1{font-size:19px;margin:0;font-weight:800;letter-spacing:-.02em}
 .side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .co{display:flex;align-items:center;gap:8px;text-decoration:none;pointer-events:none}
 .co-cap{font-size:11px;color:var(--muted);letter-spacing:.02em}
+.contact{font-size:12.5px;color:var(--text-2);background:var(--surface-2);padding:6px 12px;border-radius:999px;white-space:nowrap}
+.contact b{color:var(--text);font-weight:700;margin-left:4px}
+.contact .dot{margin:0 6px;color:var(--muted)}
+.contact a{color:var(--accent);font-weight:700;text-decoration:none}
 .co-logo{height:30px;width:auto;display:block}
 @media (prefers-color-scheme:dark){.co-logo{background:#fff;padding:4px 8px;border-radius:8px;height:38px}}
 @media (max-width:600px){.side{align-items:flex-start;width:100%;padding-left:44px}.co-logo{height:24px}.co-cap{display:none}}
@@ -159,7 +163,7 @@ a.title:hover{text-decoration:underline;color:var(--accent)}
 .dates b{color:var(--text-2);font-weight:500}
 .empty{text-align:center;color:var(--text-2);padding:40px 0}
 .loadmore{display:block;margin:14px auto 0;padding:10px 22px;border-radius:10px}
-footer{color:var(--muted);font-size:12.5px;text-align:center;padding:20px 0 30px}
+footer{color:var(--muted);font-size:12.5px;text-align:center;padding:20px 16px 30px;display:flex;flex-direction:column;align-items:center;gap:6px}
 @media (max-width:860px){
   .tiles{grid-template-columns:repeat(2,1fr)}
   .grid2{grid-template-columns:minmax(0,1fr)}
@@ -184,7 +188,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;padding:20px 0 30px
     <div><h1>기업지원사업 공고 리포팅</h1><div class="sub">도내 기업에 도움이 되는 R&amp;D·비R&amp;D 지원사업 공고를 매일 한곳에 모아 전해드립니다</div></div></div>
   <div class="side">
     <a class="co" href="#" aria-label="리포팅: 이도기술경영연구소"><span class="co-cap">Reported by</span><img class="co-logo" src="logo.png" alt="이도기술경영연구소 YIDO Technology Management Institute" width="807" height="142"></a>
-    <div class="updated" id="updated"></div>
+    <div class="contact">리포팅 문의 <b>가호정 대표</b><span class="dot">·</span><a href="tel:01054236561">010-5423-6561</a></div>
   </div>
 </div></header>
 
@@ -219,7 +223,7 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;padding:20px 0 30px
     <button class="btn loadmore" id="loadMore">더 보기</button>
   </section>
 </main>
-<footer>공고 원문은 사업명을 눌러 각 기관 홈페이지에서 확인하세요 · 세부내용은 반드시 원문 공고 확인</footer>
+<footer><div class="updated" id="updated"></div><div>공고 원문은 사업명을 눌러 각 기관 홈페이지에서 확인하세요 · 세부내용은 반드시 원문 공고 확인</div><div>리포팅 · 이도기술경영연구소</div></footer>
 <div id="tip" role="tooltip"></div>
 
 <script>
