@@ -3,17 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>전북 기업지원사업 공고 모아보기</title>
-<meta property="og:title" content="전북 기업지원사업 공고 모아보기">
-<meta property="og:description" content="모집중인 지원사업을 분야·기관·마감일별로 한눈에">
+<title>전북 기업지원사업 공고 리포팅 | 이도기술경영연구소</title>
+<meta property="og:title" content="전북 기업지원사업 공고 리포팅">
+<meta property="og:site_name" content="이도기술경영연구소">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://kahojung.github.io/JB-support/">
 <meta property="og:image" content="https://kahojung.github.io/JB-support/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="description" content="모집중인 지원사업을 분야·기관·마감일별로 한눈에">
+<meta name="description" content="전북 기업에 도움이 되는 R&amp;D·비R&amp;D 지원사업 공고를 매일 한곳에 모아 전해드립니다">
 <meta name="robots" content="noindex">
+<meta property="og:description" content="전북 기업에 도움이 되는 R&amp;D·비R&amp;D 지원사업 공고를 매일 한곳에 모아 전해드립니다">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -43,9 +44,15 @@ a{color:inherit}
 header.top{background:var(--surface);border-bottom:1px solid var(--line)}
 header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:18px;padding-bottom:16px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px}
-.logo{width:34px;height:34px;border-radius:9px;background:var(--accent);display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px}
+.logo{flex:none;width:34px;height:34px;border-radius:9px;background:var(--accent);display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px}
 h1{font-size:19px;margin:0;font-weight:800;letter-spacing:-.02em}
 .sub{color:var(--text-2);font-size:13px}
+.side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.co{display:flex;align-items:center;gap:8px;text-decoration:none;pointer-events:none}
+.co-cap{font-size:11px;color:var(--muted);letter-spacing:.02em}
+.co-logo{height:30px;width:auto;display:block}
+@media (prefers-color-scheme:dark){.co-logo{background:#fff;padding:4px 8px;border-radius:8px;height:38px}}
+@media (max-width:600px){.side{align-items:flex-start;width:100%;padding-left:44px}.co-logo{height:24px}.co-cap{display:none}}
 .updated{font-size:12.5px;color:var(--text-2);background:var(--surface-2);padding:6px 10px;border-radius:999px;white-space:nowrap}
 .sample{background:var(--warn-soft);color:var(--text);font-size:13px;padding:8px 0}
 .sample .wrap{display:flex;gap:8px;align-items:center}
@@ -174,8 +181,11 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;padding:20px 0 30px
 <body>
 <header class="top"><div class="wrap">
   <div class="brand"><div class="logo">전북</div>
-    <div><h1>기업지원사업 공고 모아보기</h1><div class="sub">도내 지원기관 공고를 매일 한곳에 모았습니다</div></div></div>
-  <div class="updated" id="updated"></div>
+    <div><h1>기업지원사업 공고 리포팅</h1><div class="sub">도내 기업에 도움이 되는 R&amp;D·비R&amp;D 지원사업 공고를 매일 한곳에 모아 전해드립니다</div></div></div>
+  <div class="side">
+    <a class="co" href="#" aria-label="리포팅: 이도기술경영연구소"><span class="co-cap">Reported by</span><img class="co-logo" src="logo.png" alt="이도기술경영연구소 YIDO Technology Management Institute" width="807" height="142"></a>
+    <div class="updated" id="updated"></div>
+  </div>
 </div></header>
 
 <main class="wrap">
