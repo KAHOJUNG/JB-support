@@ -106,6 +106,12 @@ section{margin-bottom:22px}
 .cal .day .c{align-self:flex-end;font-size:12px;font-weight:700;min-width:20px;height:20px;padding:0 5px;border-radius:999px;display:grid;place-items:center;background:var(--accent);color:#fff}
 .cal .day.past .c{background:var(--muted)}
 .cal .day.sel{outline:2px solid var(--text);outline-offset:-2px}
+.cal-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:22px}
+.cal-row > section{margin-bottom:0}
+.cal-row .cal-card .cal .day{height:54px}
+.cal .day .c.g{background:var(--good)}
+@media (max-width:860px){.cal-row{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:600px){.cal-row .cal-card .cal .day{height:auto;aspect-ratio:1/0.9}}
 .legend{display:flex;gap:12px;font-size:12px;color:var(--text-2);margin-top:8px;flex-wrap:wrap}
 .legend span{display:inline-flex;align-items:center;gap:5px}
 /* month columns */
@@ -193,14 +199,24 @@ footer{color:var(--muted);font-size:12.5px;text-align:center;padding:20px 16px 3
 </div></header>
 
 <main class="wrap">
-  <section class="card cal-card">
+  <div class="cal-row">
+    <section class="card cal-card">
       <div class="cal-head">
-        <div><h2 id="calTitle">마감 달력</h2><div class="cap" style="margin:0">날짜를 누르면 그날 마감 공고만 봅니다</div></div>
-        <div class="cal-nav"><button id="calPrev" aria-label="이전 달">‹</button><button id="calNext" aria-label="다음 달">›</button></div>
+        <div><h2 id="ncalTitle">신규 공고 달력</h2><div class="cap" style="margin:0">날짜를 누르면 그날 올라온 공고만 봅니다</div></div>
+        <div class="cal-nav"><button id="ncalPrev" aria-label="신규 공고 달력 이전 달">‹</button><button id="ncalNext" aria-label="신규 공고 달력 다음 달">›</button></div>
+      </div>
+      <div class="cal" id="ncal"></div>
+      <div class="legend"><span><i class="dot" style="background:var(--good)"></i>그날 올라온 공고 건수(공고일 기준)</span></div>
+    </section>
+    <section class="card cal-card">
+      <div class="cal-head">
+        <div><h2 id="calTitle">마감 공고 달력</h2><div class="cap" style="margin:0">날짜를 누르면 그날 마감 공고만 봅니다</div></div>
+        <div class="cal-nav"><button id="calPrev" aria-label="마감 공고 달력 이전 달">‹</button><button id="calNext" aria-label="마감 공고 달력 다음 달">›</button></div>
       </div>
       <div class="cal" id="cal"></div>
       <div class="legend"><span><i class="dot" style="background:var(--accent)"></i>마감 예정 건수</span><span><i class="dot" style="background:var(--muted)"></i>지난 마감</span></div>
-  </section>
+    </section>
+  </div>
 
   <section id="listSec">
     <div class="filters">
@@ -268,7 +284,7 @@ DATA.forEach((r,i) => {
   r.hay = (r.t+" "+r.o+" "+(r.tg||"")+" "+(r.ct||"")+" "+r.f.join(" ")).toLowerCase();
 });
 
-const state = {status:"open", field:"", org:"", q:"", day:null, tile:"", sort:"deadline", shown:30};
+const state = {status:"open", field:"", org:"", q:"", day:null, pday:null, tile:"", sort:"deadline", shown:30};
 
 // ---------- tiles ----------
 const open = DATA.filter(r=>r.isOpen);
@@ -316,32 +332,41 @@ function renderBars(elId, entries, activeKey, kind){
   bindTips(el);
 }
 // ---------- calendar ----------
-let calM = new Date(today.getFullYear(), today.getMonth(), 1);
-const byDay = new Map();
-DATA.forEach(r=>{ if(r.ed){ const k=r.e; if(!byDay.has(k)) byDay.set(k,[]); byDay.get(k).push(r);} });
+// 왼쪽: 신규 공고 달력(공고일 기준 건수, 공고일이 없으면 웹페이지에 처음 올라간 날) / 오른쪽: 마감 공고 달력(마감일 기준)
 const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-function renderCal(){
-  document.getElementById("calTitle").textContent = `마감 달력 · ${calM.getFullYear()}년 ${calM.getMonth()+1}월`;
-  const start = new Date(calM); start.setDate(1-start.getDay());
+const postedKey = r => r.sd ? r.s : (r.a || "");
+const group = keyFn => { const m = new Map(); DATA.forEach(r=>{ const k=keyFn(r); if(k){ if(!m.has(k)) m.set(k,[]); m.get(k).push(r);} }); return m; };
+const CALS = {
+  end: {el:"cal",  title:"calTitle",  name:"마감 공고 달력", word:"마감",      key:"day",  map:group(r=>r.ed?r.e:""), month:new Date(today.getFullYear(), today.getMonth(), 1), badge:"",  pastGray:true},
+  new: {el:"ncal", title:"ncalTitle", name:"신규 공고 달력", word:"신규 공고", key:"pday", map:group(postedKey),       month:new Date(today.getFullYear(), today.getMonth(), 1), badge:"g", pastGray:false},
+};
+function renderOneCal(c){
+  const M = c.month;
+  document.getElementById(c.title).textContent = `${c.name} · ${M.getFullYear()}년 ${M.getMonth()+1}월`;
+  const start = new Date(M); start.setDate(1-start.getDay());
   let h = "일월화수목금토".split("").map(d=>`<div class="dow">${d}</div>`).join("");
   for (let i=0;i<42;i++){
     const d = new Date(start.getTime()+i*DAY); d.setHours(0,0,0,0);
-    const inM = d.getMonth()===calM.getMonth();
+    const inM = d.getMonth()===M.getMonth();
     if (i>=35 && !inM && d.getDay()===0) break;
-    const k = ymd(d), list = byDay.get(k)||[];
-    const cls = ["day", inM?"":"out", +d===+today?"today":"", list.length&&inM?"has":"", d<today?"past":"", state.day===k?"sel":""].join(" ");
-    const tipTxt = list.length ? `<b>${d.getMonth()+1}월 ${d.getDate()}일 마감 ${list.length}건</b><br>`+list.slice(0,4).map(r=>"· "+esc(r.t.slice(0,28))+(r.t.length>28?"…":"")).join("<br>")+(list.length>4?`<br>외 ${list.length-4}건`:"") : "";
-    h += `<button class="${cls}" data-k="${k}" ${list.length&&inM?`data-tip="${tipTxt.replace(/"/g,'&quot;')}"`:'tabindex="-1"'}><span class="n">${inM?d.getDate():""}</span>${list.length&&inM?`<span class="c">${list.length}</span>`:""}</button>`;
+    const k = ymd(d), list = c.map.get(k)||[], on = list.length && inM;
+    const cls = ["day", inM?"":"out", +d===+today?"today":"", on?"has":"", c.pastGray&&d<today?"past":"", state[c.key]===k?"sel":""].join(" ");
+    const tipTxt = list.length ? `<b>${d.getMonth()+1}월 ${d.getDate()}일 ${c.word} ${list.length}건</b><br>`+list.slice(0,4).map(r=>"· "+esc(r.t.slice(0,28))+(r.t.length>28?"…":"")).join("<br>")+(list.length>4?`<br>외 ${list.length-4}건`:"") : "";
+    h += `<button class="${cls}" data-k="${k}" ${on?`data-tip="${tipTxt.replace(/"/g,'&quot;')}" aria-label="${d.getMonth()+1}월 ${d.getDate()}일 ${c.word} ${list.length}건"`:'tabindex="-1"'}><span class="n">${inM?d.getDate():""}</span>${on?`<span class="c ${c.badge}">${list.length}</span>`:""}</button>`;
   }
-  const el = document.getElementById("cal"); el.innerHTML = h;
+  const el = document.getElementById(c.el); el.innerHTML = h;
   el.querySelectorAll(".day.has").forEach(b=>b.onclick=()=>{
-    state.day = state.day===b.dataset.k ? null : b.dataset.k;
-    state.tile=""; setStatus("all"); update(true, true);
+    const other = c.key==="day" ? "pday" : "day";
+    state[c.key] = state[c.key]===b.dataset.k ? null : b.dataset.k;
+    state[other] = null; state.tile=""; setStatus("all"); update(true, true);
   });
   bindTips(el);
 }
-document.getElementById("calPrev").onclick=()=>{calM.setMonth(calM.getMonth()-1); renderCal();};
-document.getElementById("calNext").onclick=()=>{calM.setMonth(calM.getMonth()+1); renderCal();};
+function renderCal(){ renderOneCal(CALS.new); renderOneCal(CALS.end); }
+[["ncal",CALS.new],["cal",CALS.end]].forEach(([id,c])=>{
+  document.getElementById(id+"Prev").onclick=()=>{c.month.setMonth(c.month.getMonth()-1); renderOneCal(c);};
+  document.getElementById(id+"Next").onclick=()=>{c.month.setMonth(c.month.getMonth()+1); renderOneCal(c);};
+});
 
 // ---------- filters ----------
 const orgSel = document.getElementById("org");
@@ -364,6 +389,7 @@ function filtered(){
     if (state.field && !r.f.includes(state.field)) return false;
     if (state.org && r.o!==state.org) return false;
     if (state.day && r.e!==state.day) return false;
+    if (state.pday && postedKey(r)!==state.pday) return false;
     if (state.tile==="week" && !(r.left!==null && r.left>=0 && r.left<=7)) return false;
     if (state.tile==="fresh" && !(r.sd && (today-r.sd)/DAY<=7)) return false;
     if (state.tile==="always" && r.st!=="always") return false;
@@ -408,13 +434,14 @@ function renderActive(n){
   const f=[];
   if (state.tile) f.push(["tile", tiles.find(t=>t.id===state.tile).k]);
   if (state.day) { const d=parseD(state.day); f.push(["day", `${d.getMonth()+1}월 ${d.getDate()}일 마감`]); }
+  if (state.pday) { const d=parseD(state.pday); f.push(["pday", `${d.getMonth()+1}월 ${d.getDate()}일 공고`]); }
   if (state.field) f.push(["field", state.field]);
   if (state.org) f.push(["org", state.org]);
   if (state.q) f.push(["q", `"${state.q}"`]);
   document.getElementById("activeFilters").innerHTML = f.map(([k,l])=>`<span class="af">${esc(l)}<button data-k="${k}" aria-label="${esc(l)} 해제">×</button></span>`).join("");
   document.querySelectorAll(".af button").forEach(b=>b.onclick=()=>{
     const k=b.dataset.k;
-    if (k==="tile") state.tile=""; else if (k==="day") state.day=null; else if(k==="q"){state.q="";document.getElementById("q").value="";} else state[k]="";
+    if (k==="tile") state.tile=""; else if (k==="day") state.day=null; else if (k==="pday") state.pday=null; else if(k==="q"){state.q="";document.getElementById("q").value="";} else state[k]="";
     if (k==="org") orgSel.value="";
     update(true);
   });
