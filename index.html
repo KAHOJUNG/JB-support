@@ -108,10 +108,15 @@ section{margin-bottom:22px}
 .cal .day.sel{outline:2px solid var(--text);outline-offset:-2px}
 .cal-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:22px}
 .cal-row > section{margin-bottom:0}
-.cal-row .cal-card .cal .day{height:54px}
+.cal-row .cal-card .cal .day{height:40px;padding:3px 4px}
+.cal-row .cal .day .c{font-size:11px;min-width:18px;height:18px;padding:0 4px}
+.cal-row .cal{gap:2px}
+.cal-row .cal .dow{padding:0}
+.cal-row .cal-head{margin-bottom:4px}
+.cal-row .legend{margin-top:6px}
 .cal .day .c.g{background:var(--good)}
 @media (max-width:860px){.cal-row{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:600px){.cal-row .cal-card .cal .day{height:auto;aspect-ratio:1/0.9}}
+@media (max-width:600px){.cal-row .cal-card .cal .day{height:auto;aspect-ratio:1/0.72}}
 .legend{display:flex;gap:12px;font-size:12px;color:var(--text-2);margin-top:8px;flex-wrap:wrap}
 .legend span{display:inline-flex;align-items:center;gap:5px}
 /* month columns */
