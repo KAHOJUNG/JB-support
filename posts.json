@@ -1,5 +1,5 @@
 {
- "updated": "2026.11.18 08:29",
+ "updated": "2026.11.19 08:23",
  "items": [
   {
    "s": "2026-11-06",
@@ -357,20 +357,36 @@
    "ct": "○ 일 시 : 2026. 12. 9.(수) 10:00~17:00\n○ 사업설명 : ’27년 지원사업 조건 및 기술이전 등 1:1상담",
    "a": "2026-11-18",
    "p": 1
+  },
+  {
+   "s": "2026-11-13",
+   "e": "2026-12-04",
+   "t": "인공지능융합사업단(AICA) 2027년 AI데이터센터 서비스 이용자 정기모집(1트랙)",
+   "u": "https://www.keti.re.kr/notice/notice.php?sp=%26sp%5B%5D%3D1%26sp%5B%5D%3D2%26sp%5B%5D%3D3&pn=1&st=&at=view&idx=148452",
+   "f": [
+    "기타",
+    "인프라"
+   ],
+   "o": "한국전자기술연구원",
+   "x": 0,
+   "tg": "국내기업, 공공기관, 연구소(원), 대학교(원), 협/단체 등",
+   "ct": "지원 자원 : AI 가속기(H100, HPC), 스토리지, 개발 도구 등",
+   "a": "2026-11-19",
+   "p": 1
   }
  ],
  "overrides": {
-  "https://www.jbtp.or.kr/board/view.jbtp?menuCd=DOM_000000102001000000&boardId=BBS_0000006&dataSid=21113": {
-   "e": "2026-11-09"
-  },
-  "https://www.jbtp.or.kr/board/view.jbtp?menuCd=DOM_000000102001000000&boardId=BBS_0000006&dataSid=21060": {
-   "e": "2026-11-18"
-  },
   "https://www.jbtp.or.kr/board/view.jbtp?menuCd=DOM_000000102001000000&boardId=BBS_0000006&dataSid=20697": {
    "e": "2026-11-30"
   },
   "https://www.jbtp.or.kr/board/view.jbtp?menuCd=DOM_000000102001000000&boardId=BBS_0000006&dataSid=20927": {
    "e": "2026-12-31"
+  },
+  "https://www.jbtp.or.kr/board/view.jbtp?menuCd=DOM_000000102001000000&boardId=BBS_0000006&dataSid=21060": {
+   "e": "2026-11-18"
+  },
+  "https://www.jbtp.or.kr/board/view.jbtp?menuCd=DOM_000000102001000000&boardId=BBS_0000006&dataSid=21113": {
+   "e": "2026-11-09"
   }
  }
 }
